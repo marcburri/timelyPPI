@@ -566,13 +566,13 @@ ppi_gui <- function() {
       
       MOD <- reactive({
         if (as.character(input$noga)=="isLeaf"){
-          if (!is.null(FindNodeByFullName(tree,input$sektor)$FTSI.MOD.TD)){
-            mod.td <- summary(FindNodeByFullName(tree,input$sektor)$FTSI.MOD.TD)
+          if (!is.null(FindNodeByFullName(tree,input$sektor)$FTS.MOD.TD)){
+            mod.td <- summary(FindNodeByFullName(tree,input$sektor)$FTS.MOD.TD)
           } else {
             mod.td <- "No TD"
           }
-          if (!is.null(FindNodeByFullName(tree,input$sektor)$FTSI.MOD.AR)){
-            mod.ar <- summary(FindNodeByFullName(tree,input$sektor)$FTSI.MOD.AR)
+          if (!is.null(FindNodeByFullName(tree,input$sektor)$FTS.MOD.AR)){
+            mod.ar <- summary(FindNodeByFullName(tree,input$sektor)$FTS.MOD.AR)
           } else {
             mod.ar <- "No Forecast"
           }
