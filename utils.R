@@ -41,13 +41,10 @@ shift_time <- function(series, months, base_year) {
 
 # Remove stair values
 remove.double <- function(df) {
-  # ncols <- ncol(df)
   nrows <- length(df)
   new.df <- data.frame(matrix(ncol = 1, nrow = nrows))
   names(new.df) <- "series"
-  # new.df[1,1:ncols] <- df[1,1:ncols]
   new.df[1, 1] <- df[1]
-  # for (jj in 1:ncols) {
   for (ii in 2:nrows) {
     if (df[ii - 1] == df[ii] & df[ii] != 0) {
       new.df[ii, 1] <- NA
@@ -56,16 +53,10 @@ remove.double <- function(df) {
     }
   }
   ts(new.df$series, start = start(df), frequency = 12)
-  # as_tibble(new.df)
 }
 
 chainRest <- function(x, TSR) {
-  # nnode$ORIG <- ts(c(TSR$TS.10[1:(length(TSR$TS.10)-1)] * 100 / ppis_dez.all[[x$name]][3],
-  #                    TSR$TS.15[1:(length(TSR$TS.15)-1)] * 100 / ppis_dez.all[[x$name]][2],
-  #                    TSR$TS.20 * 100 / ppis_dez.all[[x$name]][1]), 
-  #                    start = c(2010, 12), frequency = 12)
-  # nnode$FTSI <-  nnode$ORIG
-  
+
   if (all(TSR$TS.10 == 0) & all(TSR$TS.15 == 0) & all(TSR$TS.20 == 0)) {
     message(paste0(nnode$fullName, " all = 0, this shouldn't happen!"))
   }
@@ -113,55 +104,6 @@ chainRest <- function(x, TSR) {
     )
     FTSI <- ORIG
   }
-  
-  # if (all(TSR$TS.10 == 0) & all(TSR$TS.15 == 0) & all(TSR$TS.20 == 0)) {
-  #   message(paste0(nnode$fullName, " all = 0, this shouldn't happen!"))
-  # }
-  # else if (all(TSR$TS.10 == 0) & all(TSR$TS.15 == 0) & !all(TSR$TS.20 == 0)) {
-  #   ORIG <- ts(c(TSR$TS.10[1:(length(TSR$TS.10)-1)],
-  #                      TSR$TS.15[1:(length(TSR$TS.15)-1)],
-  #                      TSR$TS.20 * 100 / ppis_dez.all[[x$name]][1]),
-  #                    start = c(2010, 12), frequency = 12)
-  #   FTSI <- ORIG
-  # }
-  # else if (all(TSR$TS.10 == 0) & !all(TSR$TS.15 == 0) & !all(TSR$TS.20 == 0)) {
-  #   ORIG <- ts(c(TSR$TS.10[1:(length(TSR$TS.10)-1)],
-  #                      TSR$TS.15[1:(length(TSR$TS.15)-1)] * 100 / ppis_dez.all[[x$name]][2],
-  #                      TSR$TS.20 * 100 / ppis_dez.all[[x$name]][1]),
-  #                    start = c(2010, 12), frequency = 12)
-  #   FTSI <-  ORIG
-  # }
-  # else if (!all(TSR$TS.10 == 0) & all(TSR$TS.15 == 0) & !all(TSR$TS.20 == 0)) {
-  #   ORIG <- ts(c(TSR$TS.10[1:(length(TSR$TS.10)-1)] * 100 / ppis_dez.all[[x$name]][3],
-  #                      TSR$TS.15[1:(length(TSR$TS.15)-1)],
-  #                      TSR$TS.20 * 100 / ppis_dez.all[[x$name]][1]),
-  #                    start = c(2010, 12), frequency = 12)
-  #   FTSI <-  ORIG
-  # }
-  # else if (all(TSR$TS.10 == 0) & !all(TSR$TS.15 == 0) & all(TSR$TS.20 == 0)) {
-  #   ORIG <- ts(c(TSR$TS.10[1:(length(TSR$TS.10)-1)],
-  #                      TSR$TS.15 * 100 / ppis_dez.all[[x$name]][2],
-  #                      TSR$TS.20[1:(length(TSR$TS.20)-1)]),
-  #                    start = c(2010, 12), frequency = 12)
-  #   FTSI <-  ORIG
-  # }
-  # else if (!all(TSR$TS.10 == 0) & all(TSR$TS.15 == 0) & all(TSR$TS.20 == 0)) {
-  #   ORIG <- ts(c(TSR$TS.10 * 100 / ppis_dez.all[[x$name]][3],
-  #                      TSR$TS.15[1:(length(TSR$TS.15)-1)],
-  #                      TSR$TS.20[1:(length(TSR$TS.20)-1)]),
-  #                    start = c(2010, 12), frequency = 12)
-  #   FTSI <- ORIG
-  # }
-  # else if (!all(TSR$TS.10 == 0) & !all(TSR$TS.15 == 0) & all(TSR$TS.20 == 0)) {
-  #   message(paste0(nnode$fullName," 20 = 0"))
-  # }
-  # else if (!all(TSR$TS.10 == 0) & !all(TSR$TS.15 == 0) & !all(TSR$TS.20 == 0)) {
-  #   ORIG <- ts_chain(ts(TSR$TS.20, start = c(2020, 12), frequency = 12),
-  #                          ts(TSR$TS.15, start = c(2015, 12), frequency = 12),
-  #                          ts(TSR$TS.10, start = c(2010, 12), frequency = 12)
-  #   )
-  #   FTSI <- ORIG
-  # }
   return(list(ORIG=ORIG, FTSI=FTSI))
 }
 
@@ -195,7 +137,6 @@ AssignCustom <- function(x,config,exo, trend, actual_y, actual_m) {
         end = c(actual_y, actual_m))
         )
       
-
       mod.ar <- auto.arima(ts.hf1, xreg = window(xreg, end = t))
       
       tt <- if (t[2] == 12) {c(t[1]+1, 1)} else {c(t[1],t[2]+1)}
@@ -283,7 +224,7 @@ AssignCustom <- function(x,config,exo, trend, actual_y, actual_m) {
     } else {
       to_idx <- which(round(ts.hf,4)==round(ts.lf[length(ts.lf)],4))
       ts.hf <- ts(c(ts.nd[1:(1+shift)], 
-                ts.hf[(gaps+1):to_idx]), # rep(NA,pattern[length(pattern)]),
+                ts.hf[(gaps+1):to_idx]), 
                 start=c(2010,12), 
                 freq = 12)
       
@@ -360,7 +301,6 @@ NApattern <- function(ts){
 pattern
 }
 
-
 # Aggregate Levels
 AggregateCustom <- function(x) {
   lgt <- length(x)
@@ -376,32 +316,16 @@ AggregateCustom <- function(x) {
     tot.w.15 <- tot.w.15 + x[[ii]]$w.15
     tot.w.20 <- tot.w.20 + x[[ii]]$w.20
     
-    #window(x[[ii]]$FTS.C, start = c(2015, 12)) 
-    
     tot.ts10 <- tot.ts10 + window(x[[ii]]$FTS.C, start = c(2010, 12), end = c(2015, 12)) * x[[ii]]$w.10
     tot.ts15 <- tot.ts15 + window(x[[ii]]$FTS.C, start = c(2015, 12), end = c(2020, 12)) * x[[ii]]$w.15
     tot.ts20 <- tot.ts20 + window(x[[ii]]$FTS.C, start = c(2020, 12)) * x[[ii]]$w.20
     
-      # if (all(window(x[[ii]]$FTS.C, start = c(2010, 12), end = c(2015, 11))) == 0) {
-      #   tot.ts15 <- tot.ts15 + window(x[[ii]]$FTS.C, start = c(2015, 12)) * x[[ii]]$w.15
-      # } else if (all(window(x[[ii]]$FTS.C, start = c(2016, 1))) == 0) {
-      #   tot.ts10 <- tot.ts10 + window(x[[ii]]$FTS.C, start = c(2010, 12), end = c(2015, 12)) /
-      #     window(x[[ii]]$FTS.C, start = c(2010, 12), end = c(2010, 12))[[1]] * 100 * x[[ii]]$w.10
-      # } else {
-      #   tot.ts10 <- tot.ts10 + window(x[[ii]]$FTS.C, start = c(2010, 12), end = c(2015, 12)) /
-      #     window(x[[ii]]$FTS.C, start = c(2010, 12), end = c(2010, 12))[[1]] * 100 * x[[ii]]$w.10
-      #   tot.ts15 <- tot.ts15 + window(x[[ii]]$FTS.C, start = c(2015, 12)) * x[[ii]]$w.15
-      # }
   }
   TS.20 <- ts(tot.ts20 / tot.w.20, start = c(2020, 12), frequency = 12)
   TS.15 <- ts(tot.ts15 / tot.w.15, start = c(2015, 12), frequency = 12)
   TS.10 <- ts(tot.ts10 / tot.w.10, start = c(2010, 12), frequency = 12)
   FTS <- ts_chain(TS.20, TS.15) %>% ts_chain(TS.10)
   
-  # TS.15 <- ts(tot.ts15 / tot.w.15, start = c(2015, 12), frequency = 12)
-  # TS.15 <- 100 * TS.15 / window(TS.15, start = c(2015, 12), end = c(2015, 12))[[1]]
-  # TS.10 <- ts(tot.ts10 / tot.w.10, start = c(2010, 12), frequency = 12)
-  # FTS <- ts_chain(TS.15, TS.10)
   return(list(TS.10 = TS.10, TS.15 = TS.15, TS.20 = TS.20, FTS = FTS))
 }
 
@@ -418,15 +342,7 @@ AggregateOrig <- function(x) {
     tot.w.10 <- tot.w.10 + x[[ii]]$w.10
     tot.w.15 <- tot.w.15 + x[[ii]]$w.15
     tot.w.20 <- tot.w.20 + x[[ii]]$w.20
-    # if (all(window(x[[ii]]$TSI.15, start = c(2016, 1))) == 0) {
-    #   tot.ts10 <- tot.ts10 + x[[ii]]$TSI.10 * x[[ii]]$w.10
-    # }
-    # if (all(window(x[[ii]]$TSI.10, start = c(2010, 12), end = c(2015, 11))) == 0) {
-    #   tot.ts15 <- tot.ts15 + x[[ii]]$TSI.15 * x[[ii]]$w.15
-    # } else {
-    #   tot.ts10 <- tot.ts10 + x[[ii]]$TSI.10 * x[[ii]]$w.10
-    #   tot.ts15 <- tot.ts15 + x[[ii]]$TSI.15 * x[[ii]]$w.15
-    # }
+
     tot.ts10 <- tot.ts10 + x[[ii]]$TSI.10 * x[[ii]]$w.10
     tot.ts15 <- tot.ts15 + x[[ii]]$TSI.15 * x[[ii]]$w.15
     tot.ts20 <- tot.ts20 + x[[ii]]$TSI.20 * x[[ii]]$w.20
@@ -437,99 +353,6 @@ AggregateOrig <- function(x) {
   FTS <- ts_chain(TS.20, TS.15) %>% ts_chain(TS.10)
   return(list(TS.10 = TS.10, TS.15 = TS.15, TS.20 = TS.20, FTS = FTS))
 }
-
-
-AggregateIP <- function(x) {
-  lgt <- length(x)
-  tot.w.10 <- 0
-  tot.w.15 <- 0
-  tot.ts10 <- 0
-  tot.ts15 <- 0
-  for (ii in 1:lgt) {
-    IL <- x[[ii]]$isLeaf
-
-    tot.w.10 <- tot.w.10 + x[[ii]]$w.10
-    tot.w.15 <- tot.w.15 + x[[ii]]$w.15
-
-
-    if (IL) {
-      if (all(window(x[[ii]]$FTSI.IP, start = c(2010, 12), end = c(2015, 11))) == 0) {
-        tot.ts15 <- tot.ts15 + window(x[[ii]]$FTSI.IP, start = c(2015, 12)) * x[[ii]]$w.15
-      } else if (all(window(x[[ii]]$FTSI.IP, start = c(2016, 1))) == 0) {
-        tot.ts10 <- tot.ts10 + window(x[[ii]]$FTSI.IP, start = c(2010, 12), end = c(2015, 12)) /
-          window(x[[ii]]$FTSI.IP, start = c(2010, 12), end = c(2010, 12))[[1]] * 100 * x[[ii]]$w.10
-      } else {
-        tot.ts10 <- tot.ts10 + window(x[[ii]]$FTSI.IP, start = c(2010, 12), end = c(2015, 12)) /
-          window(x[[ii]]$FTSI.IP, start = c(2010, 12), end = c(2010, 12))[[1]] * 100 * x[[ii]]$w.10
-        tot.ts15 <- tot.ts15 + window(x[[ii]]$FTSI.IP, start = c(2015, 12)) * x[[ii]]$w.15
-      }
-    } else {
-      if (all(window(x[[ii]]$FTS.IP, start = c(2010, 12), end = c(2015, 11))) == 0) {
-        tot.ts15 <- tot.ts15 + window(x[[ii]]$FTS.IP, start = c(2015, 12)) * x[[ii]]$w.15
-      } else if (all(window(x[[ii]]$FTS.IP, start = c(2016, 1))) == 0) {
-        tot.ts10 <- tot.ts10 + window(x[[ii]]$FTS.IP, start = c(2010, 12), end = c(2015, 12)) /
-          window(x[[ii]]$FTS.IP, start = c(2010, 12), end = c(2010, 12))[[1]] * 100 * x[[ii]]$w.10
-      } else {
-        tot.ts10 <- tot.ts10 + window(x[[ii]]$FTS.IP, start = c(2010, 12), end = c(2015, 12)) /
-          window(x[[ii]]$FTS.IP, start = c(2010, 12), end = c(2010, 12))[[1]] * 100 * x[[ii]]$w.10
-        tot.ts15 <- tot.ts15 + window(x[[ii]]$FTS.IP, start = c(2015, 12)) * x[[ii]]$w.15
-      }
-    }
-  }
-  TS.15 <- ts(tot.ts15 / tot.w.15, start = c(2015, 12), frequency = 12)
-  TS.15 <- 100 * TS.15 / window(TS.15, start = c(2015, 12), end = c(2015, 12))[[1]]
-  TS.10 <- ts(tot.ts10 / tot.w.10, start = c(2010, 12), frequency = 12)
-  FTS <- ts_chain(TS.15, TS.10)
-  return(list(TS.10 = TS.10, TS.15 = TS.15, FTS = FTS))
-}
-
-
-
-AggregateKF <- function(x) {
-  lgt <- length(x)
-  tot.w.10 <- 0
-  tot.w.15 <- 0
-  tot.ts10 <- 0
-  tot.ts15 <- 0
-  for (ii in 1:lgt) {
-    IL <- x[[ii]]$isLeaf
-
-    tot.w.10 <- tot.w.10 + x[[ii]]$w.10
-    tot.w.15 <- tot.w.15 + x[[ii]]$w.15
-
-
-    if (IL) {
-      if (all(window(x[[ii]]$FTSI.KF, start = c(2010, 12), end = c(2015, 11))) == 0) {
-        tot.ts15 <- tot.ts15 + window(x[[ii]]$FTSI.KF, start = c(2015, 12)) * x[[ii]]$w.15
-      } else if (all(window(x[[ii]]$FTSI.KF, start = c(2016, 1))) == 0) {
-        tot.ts10 <- tot.ts10 + window(x[[ii]]$FTSI.KF, start = c(2010, 12), end = c(2015, 12)) /
-          window(x[[ii]]$FTSI.KF, start = c(2010, 12), end = c(2010, 12))[[1]] * 100 * x[[ii]]$w.10
-      } else {
-        tot.ts10 <- tot.ts10 + window(x[[ii]]$FTSI.KF, start = c(2010, 12), end = c(2015, 12)) /
-          window(x[[ii]]$FTSI.KF, start = c(2010, 12), end = c(2010, 12))[[1]] * 100 * x[[ii]]$w.10
-        tot.ts15 <- tot.ts15 + window(x[[ii]]$FTSI.KF, start = c(2015, 12)) * x[[ii]]$w.15
-      }
-    } else {
-      if (all(window(x[[ii]]$FTS.KF, start = c(2010, 12), end = c(2015, 11))) == 0) {
-        tot.ts15 <- tot.ts15 + window(x[[ii]]$FTS.KF, start = c(2015, 12)) * x[[ii]]$w.15
-      } else if (all(window(x[[ii]]$FTS.KF, start = c(2016, 1))) == 0) {
-        tot.ts10 <- tot.ts10 + window(x[[ii]]$FTS.KF, start = c(2010, 12), end = c(2015, 12)) /
-          window(x[[ii]]$FTS.KF, start = c(2010, 12), end = c(2010, 12))[[1]] * 100 * x[[ii]]$w.10
-      } else {
-        tot.ts10 <- tot.ts10 + window(x[[ii]]$FTS.KF, start = c(2010, 12), end = c(2015, 12)) /
-          window(x[[ii]]$FTS.KF, start = c(2010, 12), end = c(2010, 12))[[1]] * 100 * x[[ii]]$w.10
-        tot.ts15 <- tot.ts15 + window(x[[ii]]$FTS.KF, start = c(2015, 12)) * x[[ii]]$w.15
-      }
-    }
-  }
-  TS.15 <- ts(tot.ts15 / tot.w.15, start = c(2015, 12), frequency = 12)
-  TS.15 <- 100 * TS.15 / window(TS.15, start = c(2015, 12), end = c(2015, 12))[[1]]
-  TS.10 <- ts(tot.ts10 / tot.w.10, start = c(2010, 12), frequency = 12)
-  FTS <- ts_chain(TS.15, TS.10)
-  return(list(TS.10 = TS.10, TS.15 = TS.15, FTS = FTS))
-}
-
-
 
 getRest <- function(parent, childs) {
   lgt <- length(childs)
@@ -549,10 +372,7 @@ getRest <- function(parent, childs) {
     if (grepl("rest", childs[[ii]]$name)) {
       next
     }
-    #    if (is.null(childs[[ii]]$TSI.10) | is.null(childs[[ii]]$TSI.15)) {
-    #      childs[[ii]]$TSI.10 <- myAggregate(childs[[ii]]$children)$TS.10
-    #      childs[[ii]]$TSI.15 <- myAggregate(childs[[ii]]$children)$TS.15
-    #    }
+
     tot.w10 <- tot.w10 + childs[[ii]]$w.10
     tot.w15 <- tot.w15 + childs[[ii]]$w.15
     tot.w20 <- tot.w20 + childs[[ii]]$w.20
@@ -608,7 +428,6 @@ ppi_gui <- function() {
   #load("PPI_2020.RData")
   load("tree.RData")
   load("custom_config.RData")
-  
   
   
   SetGraphStyle(tree, rankdir = "TB")
@@ -687,8 +506,8 @@ ppi_gui <- function() {
         if (input$noga == "isNotLeaf") {
           disable("method")
         } else if (input$noga == "isLeaf")
-          #disable("method")
-          enable("method")
+          disable("method")
+          #enable("method") # To be able to edit config file
       })
       
       session$onSessionEnded(function() {
@@ -700,26 +519,20 @@ ppi_gui <- function() {
         if (as.character(input$noga)=="isLeaf"){
           xts <- ts_c(
             "Orig" = FindNodeByFullName(tree,input$sektor)$ORIG,
-            #"IP" = FindNodeByFullName(tree,input$sektor)$FTSI.IP,
             "ND" = FindNodeByFullName(tree,input$sektor)$FTSI.ND,
-            #"KF" = FindNodeByFullName(tree,input$sektor)$FTSI.KF,
             "Timely" = FindNodeByFullName(tree,input$sektor)$FTS.C
           )
-          #colnames(xts) <-  c("Orig", "IP", "ND", "KF", "C")
-          #xts
+
           lst <- list(xts=xts, ttl =  FindNodeByFullName(tree,input$sektor)$name, 
                       w15 = FindNodeByFullName(tree,input$sektor)$w.15, w10 = FindNodeByFullName(tree,input$sektor)$w.10)
           lst
         } else if(as.character(input$noga)=="isNotLeaf")  {
           xts <- ts_c(
             "Orig" = FindNodeByFullName(tree,input$sektor)$ORIG,
-            #"IP" = FindNodeByFullName(tree,input$sektor)$FTS.IP,
             "ND" = FindNodeByFullName(tree,input$sektor)$FTSI.ND,
-            #"KF" = FindNodeByFullName(tree,input$sektor)$FTS.KF,
             "Timely" = FindNodeByFullName(tree,input$sektor)$FTS.C
           )
-          #
-          #colnames(xts) <-  c("Orig", "IP", "ND", "KF", "C")
+
           lst <- list(xts=xts, ttl =  FindNodeByFullName(tree,input$sektor)$name, 
                       w15 = FindNodeByFullName(tree,input$sektor)$w.15, w10 = FindNodeByFullName(tree,input$sektor)$w.10)
           lst
@@ -732,26 +545,17 @@ ppi_gui <- function() {
         if (as.character(input$noga)=="isLeaf"){
           xts <- ts_c(
             "Orig" = ts_pcy(FindNodeByFullName(tree,input$sektor)$ORIG),
-            #"IP" = FindNodeByFullName(tree,input$sektor)$FTSI.IP,
-            #"ND" = FindNodeByFullName(tree,input$sektor)$FTSI.ND,
-            #"KF" = FindNodeByFullName(tree,input$sektor)$FTSI.KF,
             "Timely" = ts_pcy(FindNodeByFullName(tree,input$sektor)$FTS.C)
           )
-          #colnames(xts) <-  c("Orig", "IP", "ND", "KF", "C")
-          #xts
+
           lst <- list(xts=xts, ttl =  FindNodeByFullName(tree,input$sektor)$name, 
                       w15 = FindNodeByFullName(tree,input$sektor)$w.15, w10 = FindNodeByFullName(tree,input$sektor)$w.10)
           lst
         } else if(as.character(input$noga)=="isNotLeaf")  {
           xts <- ts_c(
             "Orig" = ts_pcy(FindNodeByFullName(tree,input$sektor)$ORIG),
-            #"IP" = FindNodeByFullName(tree,input$sektor)$FTS.IP,
-            #"ND" = FindNodeByFullName(tree,input$sektor)$FTSI.ND,
-            #"KF" = FindNodeByFullName(tree,input$sektor)$FTS.KF,
             "Timely" = ts_pcy(FindNodeByFullName(tree,input$sektor)$FTS.C)
           )
-          #
-          #colnames(xts) <-  c("Orig", "IP", "ND", "KF", "C")
           lst <- list(xts=xts, ttl =  FindNodeByFullName(tree,input$sektor)$name, 
                       w15 = FindNodeByFullName(tree,input$sektor)$w.15, w10 = FindNodeByFullName(tree,input$sektor)$w.10)
           lst
@@ -780,7 +584,6 @@ ppi_gui <- function() {
       })
       
       
-      
       plot_tree <- reactive({
         tree$Do(function(x) SetNodeStyle(x, fillcolor = "grey", arrowhead = "vee", style = "filled,rounded", shape = "box"))
         
@@ -793,7 +596,6 @@ ppi_gui <- function() {
         } else if (xx$level == 6) {
           xx <- xx$parent$parent$parent
         }
-        #SetNodeStyle(tree, fillcolor = "grey92", arrowhead = "vee", style = "filled,rounded", shape = "box", inherit = T) 
         xx
       })
       
@@ -801,52 +603,31 @@ ppi_gui <- function() {
       output$dygraph1 <- renderDygraph({
         lst <- FTS()
         dygraph(lst$xts, main = lst$ttl) %>%
-          dyAxis("y", label = paste("Weight 10: ",lst$w10, " | Weight 15: ", lst$w15, sep = "")) %>%
-          #dySeries(c("Orig"), label = "Orig") %>%
-          #dySeries(c("IP"), label = "IP") %>%
-          #dySeries(c("KF"), label = "KF") %>%
+          dyAxis("y", label = paste("Wgt 10: ",lst$w10, " | Wgt 15: ", lst$w15," | Wgt 20: ", lst$w20, sep = "")) %>%
           dySeries(c("Timely"), label = "Timely") %>%
           dySeries(c("ND"), label = "ND", drawPoints = T, pointSize = 3) %>%
-          
           dyOptions(drawGrid = input$showgrid)
-        
-        
       })
       
       output$dygraph2 <- renderDygraph({
         lst <- FTS_PCY()
         dygraph(lst$xts, main = lst$ttl) %>%
-          dyAxis("y", label = paste("Weight 10: ",lst$w10, " | Weight 15: ", lst$w15, sep = "")) %>%
+          dyAxis("y", label = paste("Wgt 10: ",lst$w10, " | Wgt 15: ", lst$w15," | Wgt 20: ", lst$w20, sep = "")) %>%
           dySeries(c("Orig"), label = "Orig") %>%
-          #dySeries(c("IP"), label = "IP") %>%
-          #dySeries(c("KF"), label = "KF") %>%
           dySeries(c("Timely"), label = "Timely") %>%
-          #dySeries(c("ND"), label = "ND", drawPoints = T, pointSize = 3) %>%
-          
           dyOptions(drawGrid = input$showgrid)
-        
-        
       })
       
       
       output$data <- renderDataTable({
         lst <- FTS()
         xts2 <- ts_ts(lst$xts)
-        #xts2 <- lst$xts %>% ts_tbl() %>% ts_wide() %>%
-        #  mutate(time = as.Date(time))#paste(floor(time(lst$xts)), cycle(lst$xts), sep= " "),
-        #colnames(xts2) <-  c("Date", "Orig", "ND",  "C")
-        xts2  # %>%
-        #   ts_tbl() %>%
-        #   ts_wide() %>%
-        #   mutate(time = as.Date(time))
-        
+        xts2  
       })
       
       output$tree <- renderGrViz({
         xx <- plot_tree()
-        #SetNodeStyle(xx, arrowhead = "vee", style = "filled,rounded", shape = "box") 
         grViz(DiagrammeR::generate_dot(ToDiagrammeRGraph(xx)))
-        #plot(plot_tree())
       })
       
       output$sum <- renderPrint({
@@ -854,9 +635,7 @@ ppi_gui <- function() {
         mods[1]
         mods[2]
       })
-      
     })  
-  
   
     runApp(shinyApp(ui = ui, server = server))
   
