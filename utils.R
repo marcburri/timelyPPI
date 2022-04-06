@@ -402,8 +402,6 @@ getRest <- function(parent, childs) {
   return(list(TS.10 = rest.10, TS.15 = rest.15, TS.20 = rest.20))
 }
 
-
-
 ## Data Tree Function
 FindNodeByFullName <- function(node, name) {
   trav <- Traverse(node, filterFun = function(x) {
@@ -445,8 +443,10 @@ ppi_gui <- function() {
           selectInput('noga', 'Noga Stufe', choices = c("isLeaf", "isNotLeaf")),
           selectInput('sektor', 'Sektor', choices = ""),
           hr(),
-          selectInput('method', 'Methode', choices = c("Wählen...", "Interpolieren", "TD", "Keine NA"))
-          
+          selectInput('method', 'Methode', choices = c("Wählen...", "Interpolieren", "TD", "Keine NA")),
+          hr(),
+          h4("Documentation:"),
+          h5("Find more details on https://marcburri.github.io/posts/2019/12/18/timelyPPI/")
         ),
         mainPanel(
           
