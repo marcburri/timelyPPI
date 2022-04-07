@@ -446,7 +446,7 @@ ppi_gui <- function() {
           selectInput('method', 'Methode', choices = c("Wählen...", "Interpolieren", "TD", "Keine NA")),
           hr(),
           h4("Documentation:"),
-          h5("Find more details on https://marcburri.github.io/posts/2019/12/18/timelyPPI/")
+          h5("Find more details on https://marcburri.github.io/posts/2019/12/18/timely-ppi/")
         ),
         mainPanel(
           
