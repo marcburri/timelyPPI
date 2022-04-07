@@ -5,10 +5,10 @@
 
 **Author:** [Burri](https://www.linkedin.com/in/marc-burri-a64628196/) Marc
 
-## Download current data and installation instructions
+## Download current data and other useful information
 [Time Series timelyPPI (csv)](./timelyPPISeries.csv) | [Metadata timelyPPI (csv) ](./timelyPPIMeta.csv)  | [Detailed description](https://marcburri.github.io/posts/2019/12/18/timely-ppi/) | [Web application](https://mxbu.shinyapps.io/ppiapp/) 
 
-The updated timely PPI is available monthly, shortly after the FSO published most recent data.
+The updated timely PPI is available monthly, shortly after the FSO published the most recent data.
  
 ## Current timely PPI:
 ![](./Results/ppilevel.png)
