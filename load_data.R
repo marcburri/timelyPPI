@@ -4,7 +4,7 @@ load2020 <- T
 # Update necessary files from excel file: bfs_ppi_2020.xlsx
 if (load2020) {
   
-  download.file("https://dam-api.bfs.admin.ch/hub/api/dam/assets/21825494/master", destfile="bfs_ppi_2020.xlsx")
+  download.file("https://dam-api.bfs.admin.ch/hub/api/dam/assets/22304669/master", destfile="bfs_ppi_2020.xlsx")
   
   ppis.names.2020 <- read_excel("bfs_ppi_2020.xlsx", sheet = "INDEX_m", range = paste0("D8:D260"))
   ppis.names.2020[is.na(ppis.names.2020)] <- "PPI"

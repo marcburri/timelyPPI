@@ -16,7 +16,7 @@ source("utils.R")
 push_to_gh <- T
 
 #### Update data from Excel?
-update_excel <- T
+update_excel <- F
 
 # Update Data from Excel
 if (update_excel) {
@@ -152,13 +152,14 @@ traversal = "post-order"
 )
 
 # Load exogenous variables (Oil price, nominal exchangerate, trend)
-exo_raw <- ts_fred(c("WTISPLC", "EXSZUS", "NBCHBIS")) %>% ts_ts()
+exo_raw <- ts_fred(c("WTISPLC", "EXSZUS")) %>% ts_ts() # NBCHBIS
 exo_raw <- window(exo_raw, start = c(2010,1), end=c(actual_y,actual_m))
 exo <- ts_tbl(exo_raw) %>%
   ts_wide() %>%
-  mutate(neer = NBCHBIS) %>%
+  #mutate(neer = NBCHBIS) %>%
+  mutate(exch= EXSZUS) %>%
   mutate(oil =  WTISPLC*EXSZUS) %>%
-  select(c("time", "neer", "oil")) %>% #chfeur
+  select(c("time", "exch", "oil")) %>% #neer
   ts_long %>% ts_ts()
 trend <- ts(1:((actual_y-2010-1)*12+1+actual_m),start =c(2010,1), end=c(actual_y,actual_m), frequency = 12)
 
