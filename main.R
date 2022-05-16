@@ -16,7 +16,7 @@ source("utils.R")
 push_to_gh <- T
 
 #### Update data from Excel?
-update_excel <- F
+update_excel <- T
 
 # Update Data from Excel
 if (update_excel) {
