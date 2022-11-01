@@ -7,6 +7,16 @@ ts_fred <- function(..., class = "data.frame") {
   tsbox:::as_class(class)(z)
 }
 
+# Get data from yahoo
+ts_yahoo <- function(..., from ="1990-01-01", ohlcav =  "adjusted", class = "data.frame") {
+  symb <- c(...)
+  dta.env <- new.env()
+  suppressMessages(getSymbols(symb, env = dta.env, from=from, src = "yahoo"))
+  z <- data.table::rbindlist(lapply(as.list(dta.env), ts_dt))
+  z <- dplyr::filter(z, grepl(ohlcav, tolower(id)))
+  tsbox:::as_class(class)(z)
+}
+
 # Find parent Node
 find_parent <- function(node.name, level_data) {
   node_level <- level_data[node.name]

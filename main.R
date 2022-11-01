@@ -10,6 +10,8 @@ library(forecast)
 library(data.tree)
 library(quantmod)
 library(readxl)
+library(PANICr)
+library(missMDA)
 source("utils.R")
 
 
@@ -155,12 +157,33 @@ traversal = "post-order"
 # Load exogenous variables (Oil price, nominal exchangerate, trend)
 exo_raw <- ts_fred(c("WTISPLC", "EXSZUS")) %>% ts_ts() # NBCHBIS
 exo_raw <- window(exo_raw, start = c(2010,1), end=c(actual_y,actual_m))
+
+futureList <- c("GC=F", "CL=F", "HO=F", "NG=F", "BZ=F", "ZC=F", "ZO=F", "KE=F", "ZR=F", "ZM=F", "ZL=F", "ZS=F", "GF=F", "HE=F", "LE=F", "CC=F", "KC=F", "CT=F", "LBS=F", "SB=F")
+futures <- ts_yahoo(futureList, from = as.Date("2010-01-01"))
+xtsFut <- ts_xts(futures %>% ts_frequency("month", na.rm=T) %>% ts_span(end = as.Date(paste0(actual_y,"-",actual_m,"-01")))) 
+Ximp <- imputePCA(as.matrix(xtsFut), ncp=1)
+
+if(sum(is.na(xtsFut))>0){
+  xtsImp <- xts(Ximp$completeObs, order.by = index(xtsFut))
+  NF <- getnfac(scale(xtsImp), 15, "IC1")$ic
+  PCX <- prcomp(scale(Ximp$completeObs))
+} else {
+  NF <- getnfac(scale(xts(Ximp, order.by = index(xtsFut))), 15, "IC1")$ic
+  PCX <- prcomp(scale(Ximp))
+}
+xtsFut <- ts_wide(ts_tbl(xtsFut))
+xtsFut[, paste0(colnames(PCX$x[,1:NF]),"future")] <- PCX$x[,1:NF]
+futureM <- xtsFut %>%
+  ts_tbl() %>%
+  select(all_of(c("time", paste0(colnames(PCX$x[,1:NF]),"future"))))
+
 exo <- ts_tbl(exo_raw) %>%
   ts_wide() %>%
   #mutate(neer = NBCHBIS) %>%
   mutate(exch= EXSZUS) %>%
   mutate(oil =  WTISPLC*EXSZUS) %>%
   select(c("time", "exch", "oil")) %>% #neer
+  full_join(futureM, by = c("time" = "time")) %>%
   ts_long %>% ts_ts()
 trend <- ts(1:((actual_y-2010-1)*12+1+actual_m),start =c(2010,1), end=c(actual_y,actual_m), frequency = 12)
 
