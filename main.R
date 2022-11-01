@@ -165,10 +165,10 @@ Ximp <- imputePCA(as.matrix(xtsFut), ncp=1)
 
 if(sum(is.na(xtsFut))>0){
   xtsImp <- xts(Ximp$completeObs, order.by = index(xtsFut))
-  NF <- getnfac(scale(xtsImp), 15, "IC1")$ic
+  NF <- 2
   PCX <- prcomp(scale(Ximp$completeObs))
 } else {
-  NF <- getnfac(scale(xts(Ximp, order.by = index(xtsFut))), 15, "IC1")$ic
+  NF <- 2
   PCX <- prcomp(scale(Ximp))
 }
 xtsFut <- ts_wide(ts_tbl(xtsFut))
